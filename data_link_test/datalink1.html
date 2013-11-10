@@ -148,53 +148,18 @@
                 
                 
                 
-                shape = new THREE.Shape();
-                shape.fromPoints( [ v2(data.getValue(0,1), data.getValue(0,2)), 
-                										v2(data.getValue(1,1), data.getValue(1,2)), 
-                										v2(data.getValue(2,1), data.getValue(2,2)), 
-                										v2(data.getValue(3,1), data.getValue(3,2))] );
+                //shape = new THREE.Shape();
+                //shape.fromPoints( [ v2(data.getValue(0,1), data.getValue(0,2)), 
+                										//v2(data.getValue(1,1), data.getValue(1,2)), 
+                										//v2(data.getValue(2,1), data.getValue(2,2)), 
+                										//v2(data.getValue(3,1), data.getValue(3,2))] );
                 
-                geometry = shape.extrude( { amount: 40, bevelEnabled: false, curveSegments: 10, steps: 10 } );
-                geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -0.5 * Math.PI ) );
+                //geometry = shape.extrude( { amount: 40, bevelEnabled: false, curveSegments: 10, steps: 10 } );
                 
-                                var faceIndices = [ 'a', 'b', 'c', 'd' ];
-
-                                var color, f, f2, f3, p, n, vertexIndex, radius = 100;;
+                var pt = new THREE.Vector3(0,0,0);
+                shape = new THREE.Sphere(pt, 10);
                 
-                                for ( var i = 0; i < geometry.faces.length; i ++ ) {
-
-                                        f = geometry.faces[ i ];
-                                        //f2 = geometry2.faces[ i ];
-                                        //f3 = geometry3.faces[ i ];
-
-                                        n = ( f instanceof THREE.Face3 ) ? 3 : 4;
-
-                                        for( var j = 0; j < n; j++ ) {
-
-                                                vertexIndex = f[ faceIndices[ j ] ];
-
-                                                p = geometry.vertices[ vertexIndex ];
-
-                                                color = new THREE.Color( 0xffffff );
-                                                color.setHSL( ( p.y / radius + 1 ) / 2, 1.0, 0.5 );
-
-                                                f.vertexColors[ j ] = color;
-/*
-                                                color = new THREE.Color( 0xffffff );
-                                                color.setHSL( 0.0, ( p.y / radius + 1 ) / 2, 0.5 );
-
-                                                f2.vertexColors[ j ] = color;
-
-                                                color = new THREE.Color( 0xffffff );
-                                                color.setHSL( 0.125 * vertexIndex/geometry.vertices.length, 1.0, 0.5 );
-
-                                                f3.vertexColors[ j ] = color;
-*/
-                                        }
-
-                                }
-
-
+ 
 
                 material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } ),
                 mesh = new THREE.Mesh( geometry, material );
@@ -202,32 +167,7 @@
                 mesh.castShadow = true;
                 // mesh.receiveShadow = true;
         group.add( mesh );        
-/*
-                geometry = new THREE.CubeGeometry( 10, 10, 10 );
-                colorful( colors, 100);
-                var texture = THREE.ImageUtils.loadTexture( "cel-shade-64.png" );
-                for ( var i = 0; i < 100; i++) {
-                        material = [
-                                new THREE.MeshPhongMaterial( { map: texture, side: THREE.DoubleSide, transparent: true } ),
-                                new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x888888, opacity: 0.8, specular: 0x888888, shininess: 200, transparent: true } )
-                        ]
-                        material[1].color.setHSL( colors[i], 0.7, 0.5 );
-                        cube = THREE.SceneUtils.createMultiMaterialObject( geometry, material);
-                        
-                        // material = new THREE.MeshPhongMaterial( { map: texture, opacity: 0.8, side: THREE.DoubleSide, transparent: true } );
-                        // cube = new THREE.Mesh( geometry, material );
-                        cube.position.set( 100 * Math.random() - 50, 100 * Math.random() - 50, 100 * Math.random() - 50 );
-                        cube.rotation.set( Math.PI * Math.random(), Math.PI * Math.random(), Math.PI * Math.random() );
-                        cube.receiveShadow = true;
-                        cube.castShadow = true;
-                        group.add( cube );
-                        
-                        // cube = cube.clone();                        
-                        // cube.material = new THREE.MeshPhongMaterial( {color: 0xfffff, ambient: 0x888888, opacity: 0.8, specular: 0x888888, shininess: 200, transparent: true} );
-                        // cube.material.color.setHSL( colors[i], 0.7, 0.5 );
-                        // group.add( cube );
-                }
-*/                
+            
                 scene.add( group );
         }
 

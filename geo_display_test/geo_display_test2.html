@@ -23,6 +23,8 @@
         var data2;
         var verts = new Array();
         var vert_att = new Array();
+        var lines = new Array();
+        var line_att = new Array();
         var meshes = new Array();
 
 
@@ -47,12 +49,16 @@
       	
         	function init() {
   
-
+						var l = 0;
 						var m = 0;
+						
         			for(var i = 0; i<data1.getNumberOfRows(); i++){
         				if (data1.getValue(i,0) == "Vertex") {
         					verts[i] = v3(data1.getValue(i,1), data1.getValue(i,2), data1.getValue(i,3));
         					vert_att[i] = data1.getValue(i,6);
+        				}else if (data1.getValue(i,0) == "Line") {
+        					lines[l] = l2(data1.getValue(i,1), data1.getValue(i,2)); 
+        					l++;
         				} else if (data1.getValue(i,0) == "Mesh") {
         					meshes[m] = s4(data1.getValue(i,2),data1.getValue(i,3),data1.getValue(i,4),data1.getValue(i,5));
         					m++;
@@ -71,16 +77,8 @@
                 document.body.appendChild( info );
                 // info.style.cssText = 'margin 0 0 0 100px: auto; position: absolute; top: 0px; width: 100% ';
                 info.style.cssText = 'position: absolute; width: 100%; ';
-                info.innerHTML = info.txt = '<h1>Geo Display Test</h1>' +
-                        'x:<input type="range" id="spin" min="-50" max="50" onchange="group.position.x=this.value;" step="1" value="' + group.position.x + '" > ' +
-                        'y:<input type="range" id="spin" min="-50" max="50" onchange="group.position.y=this.value;" step="1" value="' + group.position.y + '" > ' +
-                        'z:<input type="range" id="spin" min="-50" max="50" onchange="group.position.z=this.value;" step="1" value="' + group.position.z + '" > ' +
-                        '<button onclick="console.log( scene );" >test</button> ' +
-                '';
+                info.innerHTML = info.txt = '<h1>Geo Display Test</h1>' ;
 
-                stats = new Stats();
-                stats.domElement.style.cssText = 'position: absolute; top: 0px; zIndex: 100; ';
-                document.body.appendChild( stats.domElement );
                 
                 scene = new THREE.Scene();
                 if ( ! Detector.webgl ) {
@@ -106,26 +104,60 @@
                                                
 
 // Axes                
-        scene.add( new THREE.ArrowHelper( v(1, 0, 0), v(0, 0, 0), 100, 0xcc0000) );
-        scene.add( new THREE.ArrowHelper( v(0, 1, 0), v(0, 0, 0), 100, 0x00cc00) );
-        scene.add( new THREE.ArrowHelper( v(0, 0, 1), v(0, 0, 0), 100, 0x0000cc) );
+        				//scene.add( new THREE.ArrowHelper( v(1, 0, 0), v(0, 0, 0), 100, 0xcc0000) );
+        				//scene.add( new THREE.ArrowHelper( v(0, 1, 0), v(0, 0, 0), 100, 0x00cc00) );
+        				//scene.add( new THREE.ArrowHelper( v(0, 0, 1), v(0, 0, 0), 100, 0x0000cc) );
 
 // Objects
 
-                material = new THREE.MeshBasicMaterial( {color: Math.random() * 0xffffff } );
-                 
-                sphere = THREE.Sphere(verts[0], vert_att[0]);
-                mesh = new THREE.Mesh(sphere, material);
-                scene.add(mesh);
+                
+                for (i = 0; i < verts.length; i++) {
+                	var a_c = (vert_att[i] /5 ) * 255
+                	material = new THREE.MeshBasicMaterial({color:"#" + componentToHex(a_c) + componentToHex(255-a_c) + componentToHex(0)});
+                	 sphere = new THREE.SphereGeometry(vert_att[i]);
+                	mesh = new THREE.Mesh(sphere, material);
+                	mesh.position.set(verts[i].x, verts[i].y, verts[i].z);
+                	//mesh.castShadow = true;
+                	//mesh.receiveShadow = true;
+                	scene.add(mesh);
+                }
+                
+                
+                for (i = 0; i < lines.length; i++) {
+                	line = new THREE.Line(lines[i]);
+                	scene.add(line);
+                }
                  
                 
         }
+        
+        
+        function v(x,y,z){ return new THREE.Vector3(x,y,z); }
+        function v3(x, y, z){ return new THREE.Vector3( x, y, z ); }
+        function l2(v1,v2) {
+        				var line_verts = new THREE.Geometry();
+                line_verts.vertices.push(verts[v1]);
+                line_verts.vertices.push(verts[v2]);
+                return line_verts;
+              }
+        function s4(a,b,c,d)
+        {				shape = new THREE.Shape([ verts[a], verts[b], verts[c], verts[d] ]);
+                //shape.fromPoints( [ verts[a], verts[b], verts[c], verts[d] ] );
+                return shape;
+        }
+        
+        
+        
+        
+        function componentToHex(c) {
+    			var hex = c.toString(16);
+    			return hex.length == 1 ? "0" + hex : hex;
+				}
 
         function animate() {
                 requestAnimationFrame( animate );
                 controls.update();
                 renderer.render( scene, camera );
-                stats.update();
         }
 
         function onWindowResize() {
@@ -144,13 +176,7 @@
                 return arr;
         }        
         
-        function v(x,y,z){ return new THREE.Vector3(x,y,z); }
-        function v3(x, y, z){ return new THREE.Vector3( x, y, z ); }
-        function s4(a,b,c,d)
-        {				shape = new THREE.Shape([ verts[a], verts[b], verts[c], verts[d] ]);
-                //shape.fromPoints( [ verts[a], verts[b], verts[c], verts[d] ] );
-                return shape;
-        }
+        
 </script>
 </body>
 </html>
